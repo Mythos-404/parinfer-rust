@@ -2,23 +2,27 @@
 
 rustPlatform.buildRustPackage rec {
   name = "parinfer-rust-${version}";
-  version = "0.4.3";
+  version = "0.5.0";
 
   src = ./.;
   cargoLock = {
     lockFile = ./Cargo.lock;
   };
 
-  buildInputs = [
+  useFetchCargoVendor = true;
+
+  nativeBuildInputs = [
     llvmPackages.libclang
     llvmPackages.clang
     libiconv
+    rustPlatform.bindgenHook
   ];
   LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
 
   postInstall = ''
     mkdir -p $out/share/kak/autoload/plugins
-    cp rc/parinfer.kak $out/share/kak/autoload/plugins/
+    sed "s,^str parinfer_path .*,str parinfer_path '${placeholder "out"}/bin/parinfer-rust'," \
+      rc/parinfer.kak >$out/share/kak/autoload/plugins/parinfer.kak
 
     rtpPath=$out/share/vim-plugins/parinfer-rust
     mkdir -p $rtpPath/plugin

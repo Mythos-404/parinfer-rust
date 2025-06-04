@@ -15,7 +15,7 @@ Rather than switching between "paren" mode and "indent" mode, parinfer uses info
 
 Dependencies:
 
-* https://www.rust-lang.org/en-US/install.html[rust] >= 1.36
+* https://www.rust-lang.org/en-US/install.html[rust] >= ~1.83 ?
 * `clang` and `libclang-dev` packages or equivalent for your OS
 
 
@@ -109,7 +109,7 @@ Add this to your `+kakrc+`
 plug "eraserhd/parinfer-rust" do %{
     cargo install --force --path .
 } config %{
-    hook global WinSetOption filetype=(clojure|lisp|scheme|racket) %{
+    hook global WinSetOption filetype=(clojure|lisp|picolisp|racket|scheme) %{
         parinfer-enable-window -smart
     }
 }
@@ -135,7 +135,7 @@ Add this to your `+kakrc+`
 
 [source,kak]
 ----
-hook global WinSetOption filetype=(clojure|lisp|scheme|racket) %{
+hook global WinSetOption filetype=(clojure|lisp|picolisp|racket|scheme) %{
     parinfer-enable-window -smart
 }
 ----
@@ -207,14 +207,10 @@ reproducible build and test environments.  It's a good idea to run tests with
 it.
 
 ....
-$ nix-build release.nix                  # Build and test everything
-$ cargo test                             # Run the native tests
+$ nix flake check                        # Build and test everything
 $ cargo +nightly web test                # Test the WebAssembly version
 $ vim --clean -u tests/vim/run.vim       # Test against locally-installed Vim
 $ ( cd tests/kakoune && ./run.sh )       # Test against locally-installed Kakoune
-$ nix-build release.nix -A vim-tests     # Test against Nix Vim package
-$ nix-build release.nix -A neovim-tests  # Test against Nix Neovim package
-$ nix-build release.nix -A kakoune-tests # Test against Nix Kakoune package
 ....
 
 Vim tests are in a nice, readable format in `+tests/vim/test-cases.md+`.
@@ -232,6 +228,8 @@ This wouldn’t be possible without the work of others:
 * Michael Camilleri - User-defined comments.
 * Mitsuhiro Nakamura - Support for Common Lisp and Scheme.
 * ElKowar - User-defined string-delimiters and support for Yuck.
+* Graham Enos - Updating Rust edition
+* Sunjay Cauligi - Support for Hy
 
 == License
 
